@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Movie Sentiment Analyzer</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <main>
+        <section class="hero-section">
+            <div class="section-content">
+                <div class ="hero-details">
+                    <h1>MOVIE <span class="sentiment-text">SENTIMENT</span><br />ANALYZER</h1>
+                    <div class = "buttons">
+                        <form action="/analyze" method="POST">
+                            <select class = "platform_name" name="platform" required>
+                                <option value="" disabled selected>Select platform</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="twitter">X</option>
+                            </select><br>
+                            <input class = "movie_name" type="text" name="query" placeholder="Enter movie title..." required>
+                            <button class = "analyze" type="submit">Analyze</button>
+                        </form>
+                    </div>
+                </div>
+                <div class = "hero-image-wrapper">
+                    <img src ="/static/movie.png" alt="Movie Image">
+                </div>    
+            </div>
+        </section>
+    </main>
+</html>

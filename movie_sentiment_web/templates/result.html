@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result for {{ movie_title }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.1/wordcloud2.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff4e4;
+            color: #0091AD;
+            padding: 40px;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #000;
+        }
+
+        #sentimentChart {
+            display: block;
+            margin: 30px auto;
+            max-width: 400px;
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .comment {
+            margin: 12px auto;
+            padding: 16px;
+            border-left: 6px solid #ccc;
+            background: #333;
+            border-radius: 6px;
+            max-width: 700px;
+            font-size: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+
+        .positive {
+            border-color: #06d6a0;
+        }
+
+        .negative {
+            border-color: #ef476f;
+        }
+
+        strong {
+            color: #06d6a0;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #06d6a0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #04b48c;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sentiment Result for "{{ movie_title }}"</h1>
+
+    {% if poster %}
+        <div style="text-align:center;">
+            <img src="{{ poster }}" alt="Poster for {{ movie_title }}" style="max-width: 250px; border-radius: 12px;"/>
+        </div>
+    {% endif %}
+
+        <h2>Plot Summary</h2>
+        <p style="max-width: 700px; margin: 10px auto;">{{ plot }}</p>
+
+
+
+    
+
+
+    {% if error %}
+        <p style="color: #ef476f; text-align: center;">{{ error }}</p>
+    {% else %}
+
+        <canvas id="sentimentChart"></canvas>
+
+        <script>
+            const ctx = document.getElementById("sentimentChart").getContext("2d");
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Positive", "Negative"],
+                    datasets: [{
+                        data: [{{ positive }}, {{ negative }}],
+                        backgroundColor: ["#00c853", "#ff5252"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff',
+                                font: { size: 14 }
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, context) => {
+                                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                const percent = (value / total * 100).toFixed(1);
+                                return percent + '%';
+                            },
+                            font: {
+                                weight: 'bold',
+                                size: 16
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+        </script>
+
+        <h2>Sample Comments</h2>
+
+        {% for sentiment, comment_list in comments.items() %}
+            <h3>{{ sentiment.capitalize() }} Comments ({{ comment_list|length }})</h3>
+            {% for comment in comment_list[:5] %}
+                <div class="comment {{ sentiment }}">
+                    <strong>{{ sentiment.capitalize() }}:</strong> {{ comment }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        
+
+        <p style="text-align: center; font-size: 14px; color: #777;">Searched on: {{ search_date }}</p>
+
+
+        <div style="text-align:center;">
+            <button onclick="showWordCloud('positive')">Positive Word Cloud</button>
+            <button onclick="showWordCloud('negative')" style="background-color: red; color: white;">Negative Word Cloud</button>
+
+        </div>
+
+        <canvas id="wordCloudCanvas" width="600" height="400" style="margin: 20px auto; display: block;"></canvas>
+
+        <script>
+    function showWordCloud(sentiment) {
+        const comments = {{ cleaned_comments | tojson }};
+
+        const stopWords = new Set([
+            "the", "and", "for", "are", "but", "not", "with", "this", "that", "you", "your",
+            "was", "what", "have", "has", "had", "all", "can", "get", "from", "they", "them",
+            "out", "just", "too", "very", "more", "one", "like", "really", "its", "it's",
+            "about", "who", "when", "how", "where", "which", "been", "also", "into", "because", "than","see"
+        ]);
+
+        const words = comments[sentiment]
+            .join(" ")
+            .replace(/[^\w\s]/gi, '')
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(w => w.length > 2 && !stopWords.has(w));
+
+        const freqMap = {};
+        words.forEach(word => {
+            freqMap[word] = (freqMap[word] || 0) + 1;
+        });
+
+        const list = Object.entries(freqMap).sort((a, b) => b[1] - a[1]);
+
+        WordCloud(document.getElementById('wordCloudCanvas'), {
+            list: list.slice(0, 100),
+            gridSize: 8,
+            weightFactor: 5,
+            fontFamily: 'Arial',
+            color: sentiment === 'positive' ? '#06d6a0' : '#ef476f',
+            backgroundColor: '#fff4e4',
+            shuffle: false,
+            rotateRatio: 0,
+            rotationSteps: 1
+        });
+    }
+
+    window.onload = () => {
+        showWordCloud('positive');
+    };
+</script>
+
+
+    {% endif %}
+
+</body>
+</html>

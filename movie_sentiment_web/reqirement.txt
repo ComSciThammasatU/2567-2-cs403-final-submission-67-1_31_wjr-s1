@@ -1,0 +1,7 @@
+flask
+google-api-python-client
+nltk
+spacy
+beautifulsoup4
+contractions
+scikit-learn
