@@ -2,7 +2,7 @@
 
 **ชื่อโครงงาน (ไทย):** การวิเคราะห์ความคิดเห็นของภาพยนตร์จากแพลตฟอร์มออนไลน์
 
-**Project Title (Eng):** MOVIE REVIEWS SENTUMENT ANALYSIS FROM ONLINE PLATFORMS CODE ORDERRING 
+**Project Title (Eng):** MOVIE REVIEWS SENTUMENT ANALYSIS FROM ONLINE PLATFORMS
 
 **อาจารย์ที่ปรึกษาโครงงาน:** ผศ. ดร. วิรัตน์ จารีวงศ์ไพบูลย์
 
