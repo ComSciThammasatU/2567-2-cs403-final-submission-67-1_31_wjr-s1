@@ -31,6 +31,7 @@
 1. ทำการ clone GitHub Repository เพื่อบันทึกไฟล์ลงเครื่อง
 2. ทำการติดตั้ง Library ที่ใช้ในการใช้งานระบบในไฟล์ reqirement.txt ด้วยคำสั่ง pip install -r requirements.txt ในเทอมินอล
 3. ทำรัน python ที่ไฟล์ app.py เพื่อใช้งานระบบ หลังจากนั้นจะขึ้นหน้าเว็บการวิเคราะห์ความคิดเห็นของภาพยนตร์ขึ้นมาซึ่งสามารถเลือกได้ว่าต้องการวิเคราะห์ความคิดเห็นจากที่ใด
+**สามารถดูคลิปวิดีโอการ clone git ที่ชัดได้ที่ : https://drive.google.com/file/d/1Plr81dyqeZ4-WkkQQ-j3Kr8iH1l875iC/view?usp=sharing**
 
 [![Screenshot-2025-05-23-035242.png](https://i.postimg.cc/YCJr7kN8/Screenshot-2025-05-23-035242.png)](https://postimg.cc/cvBy7pb8)
 
